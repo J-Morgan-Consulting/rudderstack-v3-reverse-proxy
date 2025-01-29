@@ -1,9 +1,9 @@
 name = "rudderstack-v3-reverse-proxy"  # Replace with your project name
 compatibility_date = "2024-08-15"
 main = "src/index.js"
-account_id = "XXX"  # Replace with your Cloudflare account ID
+account_id = "xxx"  # Replace with your Cloudflare account ID
 kv_namespaces = [
-  { binding = "KV", id = "XXX" }
+  { binding = "KV", id = "xxx" }
 ]
 [env.production]
 name = "production"

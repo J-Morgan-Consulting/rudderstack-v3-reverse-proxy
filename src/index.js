@@ -1,4 +1,5 @@
 const RUDDERSTACK_SDK_V3_URL = 'https://cdn.rudderlabs.com/v3';
+const RUDDERSTACK_SDK_URL = 'https://cdn.rudderlabs.com';
 const POLYFILL_URL = 'https://polyfill-fastly.io/v3/polyfill.min.js?version=3.111.0&features=Symbol%2CPromise&callback=rudderAnalyticsMount';
 
 async function getDataPlaneUrl(hostname) {
@@ -23,17 +24,21 @@ async function handleRequest(request) {
 
         if (url.pathname.startsWith('/v3')) {
             targetURL = `${RUDDERSTACK_SDK_V3_URL}${url.pathname.substring(3)}`;
+        } else if (url.pathname.startsWith('/3.')) {
+            targetURL = `${RUDDERSTACK_SDK_URL}${url.pathname}`;
         } else if (url.pathname === '/v3/polyfill.min.js?version=3.111.0&features=Symbol%2CPromise&callback=rudderAnalyticsMount') {
             targetURL = POLYFILL_URL;
+        } else if (url.pathname.startsWith('/gtag')) {
+            targetURL = `https://www.googletagmanager.com${url.pathname}`;
         } else {
             // Get the Referer header to determine the origin
-            const referer = request.headers.get('Referer');
-            if (!referer) {
+            const origin = request.headers.get('origin');
+            if (!origin) {
                 console.warn('Referer header not found');
                 return new Response('Referer header not found', { status: 400 });
             }
 
-            const originUrl = new URL(referer);
+            const originUrl = new URL(origin);
             const originHostname = originUrl.hostname;
 
             // Get the data plane URL based on the origin
